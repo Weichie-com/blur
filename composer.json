@@ -1,0 +1,43 @@
+{
+    "name": "weichie-com/blur",
+    "description": "PII detection and de-identification SDK for BeNeLux (Belgium, Netherlands, Luxembourg)",
+    "keywords": ["pii", "privacy", "gdpr", "anonymization", "de-identification", "data-protection", "benelux", "blur", "bsn", "iban"],
+    "homepage": "https://github.com/weichie-com/blur",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Weichie Blur Contributors",
+            "homepage": "https://github.com/weichie-com/blur/contributors"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/weichie-com/blur/issues",
+        "source": "https://github.com/weichie-com/blur"
+    },
+    "require": {
+        "php": ">=8.1",
+        "ext-mbstring": "*",
+        "ext-openssl": "*",
+        "giggsey/libphonenumber-for-php": "^8.13"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Weichie\\Blur\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Weichie\\Blur\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
