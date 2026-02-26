@@ -46,6 +46,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Input validation and sanitization
 - Secure encryption with random IV
 
+## [1.1.0] - 2026-02-26
+
+### Added
+- US-specific recognizers (ported from Microsoft Presidio):
+  - US Social Security Number (SSN) with area/group/serial validation
+  - US Individual Taxpayer Identification Number (ITIN)
+  - US Passport Number (traditional + next-gen formats)
+  - US Driver License (multi-state alphanumeric + numeric formats)
+  - US Bank Account Number
+  - US ABA Routing Number with checksum validation
+- Unit tests for all US recognizers
+
 ## [Unreleased]
 
 ### Planned
@@ -58,4 +70,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+[1.1.0]: https://github.com/weichie-com/blur/releases/tag/v1.1.0
 [1.0.0]: https://github.com/weichie-com/blur/releases/tag/v1.0.0

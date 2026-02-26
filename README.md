@@ -5,7 +5,7 @@
 [![Tests](https://img.shields.io/badge/tests-113%20passed-brightgreen.svg)](phpunit.xml)
 [![Coverage](https://img.shields.io/badge/coverage-354%20assertions-blue.svg)](tests/)
 
-A data protection and de-identification SDK focused on **BeNeLux** countries (Belgium, Netherlands, Luxembourg), inspired by [Microsoft Presidio](https://github.com/microsoft/presidio).
+A data protection and de-identification SDK for **BeNeLux** (Belgium, Netherlands, Luxembourg) and **US** identifiers, inspired by [Microsoft Presidio](https://github.com/microsoft/presidio).
 
 ---
 
@@ -19,6 +19,13 @@ A data protection and de-identification SDK focused on **BeNeLux** countries (Be
   - 🇱🇺 Luxembourg National ID
   - BeNeLux IBAN codes with mod-97 checksum
   - Phone numbers for BE/NL/LU (using libphonenumber)
+- **US-Specific Recognizers**:
+  - 🇺🇸 Social Security Number (SSN) with area/group/serial validation
+  - 🇺🇸 Individual Taxpayer ID (ITIN)
+  - 🇺🇸 Passport Number (traditional + next-gen)
+  - 🇺🇸 Driver License (multi-state formats)
+  - 🇺🇸 Bank Account Number
+  - 🇺🇸 ABA Routing Number with checksum validation
 - **Generic Recognizers**: Email, Credit Card (Luhn), IP Address, URL
 - **Multiple Anonymization Strategies**:
   - Replace with custom values
@@ -218,6 +225,17 @@ $results = $analyzer->analyze(
 | `IBAN_CODE` | IBAN (BE/NL/LU) | mod-97 checksum | 🇧🇪🇳🇱🇱🇺 |
 | `PHONE_NUMBER` | Phone numbers | libphonenumber | 🇧🇪🇳🇱🇱🇺 |
 
+### US-Specific
+
+| Entity Type | Description | Validation | Country |
+|-------------|-------------|------------|---------|
+| `US_SSN` | Social Security Number | Area/group/serial rules | 🇺🇸 US |
+| `US_ITIN` | Individual Taxpayer ID | Format + digit ranges | 🇺🇸 US |
+| `US_PASSPORT` | Passport Number | Pattern (context-boosted) | 🇺🇸 US |
+| `US_DRIVER_LICENSE` | Driver License | Multi-state patterns | 🇺🇸 US |
+| `US_BANK_NUMBER` | Bank Account Number | Pattern (context-boosted) | 🇺🇸 US |
+| `US_ABA_ROUTING` | ABA Routing Number | Weighted checksum (mod 10) | 🇺🇸 US |
+
 ### Generic
 
 | Entity Type | Description | Validation |
@@ -252,6 +270,10 @@ ISO 7064 mod-97 algorithm for IBAN codes and Belgian National Numbers.
 
 Dutch "elfproef" (11-check) algorithm for validating BSN numbers.
 
+### ABA Routing Checksum (US ABA Routing)
+
+Weighted sum mod-10 algorithm (weights: 3, 7, 1) for validating US ABA routing numbers.
+
 ## Architecture
 
 ```
@@ -269,10 +291,17 @@ Weichie\Blur\
 │   │   │   ├── UrlRecognizer.php
 │   │   │   ├── IbanRecognizer.php
 │   │   │   └── PhoneRecognizer.php
-│   │   └── BeNeLux/                 # BeNeLux-specific
-│   │       ├── BsnRecognizer.php
-│   │       ├── BelgianNationalNumberRecognizer.php
-│   │       └── LuxembourgNationalIdRecognizer.php
+│   │   ├── BeNeLux/                 # BeNeLux-specific
+│   │   │   ├── BsnRecognizer.php
+│   │   │   ├── BelgianNationalNumberRecognizer.php
+│   │   │   └── LuxembourgNationalIdRecognizer.php
+│   │   └── US/                      # US-specific
+│   │       ├── UsSsnRecognizer.php
+│   │       ├── UsItinRecognizer.php
+│   │       ├── UsPassportRecognizer.php
+│   │       ├── UsDriverLicenseRecognizer.php
+│   │       ├── UsBankRecognizer.php
+│   │       └── AbaRoutingRecognizer.php
 │   └── Models/
 │       ├── RecognizerResult.php
 │       └── Pattern.php
@@ -342,6 +371,7 @@ This project is inspired by [Microsoft Presidio](https://github.com/microsoft/pr
 
 ## Roadmap
 
+- [x] US-specific recognizers (SSN, ITIN, Passport, Driver License, Bank Account, ABA Routing)
 - [ ] Additional country-specific recognizers (Germany, France, Spain, etc.)
 - [ ] Custom recognizer builder API
 - [ ] Batch processing support

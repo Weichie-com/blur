@@ -11,14 +11,15 @@ use Weichie\Blur\Analyzer\Models\RecognizerResult;
 
 /**
  * Recognizes phone numbers using libphonenumber.
- * Focused on BeNeLux countries: Belgium (+32), Netherlands (+31), Luxembourg (+352).
+ * Supports BeNeLux countries: Belgium (+32), Netherlands (+31), Luxembourg (+352),
+ * and US (+1).
  */
 class PhoneRecognizer implements EntityRecognizer
 {
     private PhoneNumberUtil $phoneUtil;
     private array $supportedRegions;
 
-    public function __construct(array $supportedRegions = ['BE', 'NL', 'LU'])
+    public function __construct(array $supportedRegions = ['BE', 'NL', 'LU', 'US'])
     {
         $this->phoneUtil = PhoneNumberUtil::getInstance();
         $this->supportedRegions = $supportedRegions;
