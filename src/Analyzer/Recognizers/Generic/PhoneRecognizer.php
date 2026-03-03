@@ -43,6 +43,12 @@ class PhoneRecognizer implements EntityRecognizer
                 $start = $match->start();
                 $rawString = $match->rawString();
 
+                // Skip short digit-only matches (e.g. years like "2024")
+                $digitCount = strlen(preg_replace('/\D/', '', $rawString));
+                if ($digitCount < 6) {
+                    continue;
+                }
+
                 // Validate the phone number
                 if ($this->phoneUtil->isValidNumber($phoneNumber)) {
                     // Convert byte offset to character offset for UTF-8
