@@ -43,7 +43,7 @@ class UsSsnRecognizer extends PatternRecognizer
             new Pattern(
                 name: 'SSN (medium)',
                 regex: '/\b[0-9]{3}[- .][0-9]{2}[- .][0-9]{4}\b/',
-                score: 0.5
+                score: 0.85
             ),
         ];
 
