@@ -52,10 +52,8 @@ class AnalyzerEngine
             $results = array_merge($results, $recognizerResults);
         }
 
-        // Enhance using context
-        if (!empty($context)) {
-            $results = $this->enhanceUsingContext($text, $results, $context, $recognizers);
-        }
+        // Enhance using context (always run — recognizers provide their own context words)
+        $results = $this->enhanceUsingContext($text, $results, $context, $recognizers);
 
         // Remove duplicates and conflicts
         $results = $this->removeConflicts($results);
@@ -148,8 +146,9 @@ class AnalyzerEngine
             // Check if any context word appears
             foreach ($entityContext as $word) {
                 if (mb_strpos($surroundingText, mb_strtolower($word, 'UTF-8')) !== false) {
-                    // Boost score by 0.15, cap at 1.0
-                    $result->score = min($result->score + 0.15, 1.0);
+                    // Boost score by 0.35 (matching Presidio), cap at 1.0, floor at 0.4
+                    $result->score = min($result->score + 0.35, 1.0);
+                    $result->score = max($result->score, 0.4);
                     break;
                 }
             }
