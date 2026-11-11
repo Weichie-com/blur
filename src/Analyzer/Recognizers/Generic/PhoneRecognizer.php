@@ -51,9 +51,14 @@ class PhoneRecognizer implements EntityRecognizer
 
                 // Validate the phone number
                 if ($this->phoneUtil->isValidNumber($phoneNumber)) {
-                    // Convert byte offset to character offset for UTF-8
-                    $charStart = mb_strlen(substr($text, 0, $start), 'UTF-8');
+                    // libphonenumber (giggsey) already returns a UTF-8 character
+                    // offset, not a byte offset. Use it as is, and verify that
+                    // the span really holds the raw match before trusting it.
                     $charLength = mb_strlen($rawString, 'UTF-8');
+                    $charStart = $this->resolveCharStart($text, $rawString, $start, $charLength);
+                    if ($charStart === null) {
+                        continue;
+                    }
 
                     $results[] = new RecognizerResult(
                         entityType: 'PHONE_NUMBER',
@@ -90,6 +95,30 @@ class PhoneRecognizer implements EntityRecognizer
             'phone', 'telefoon', 'téléphone', 'tel', 'mobile',
             'mobiel', 'gsm', 'cell', 'number', 'nummer', 'numéro'
         ];
+    }
+
+    /**
+     * Return the character offset where $rawString starts in $text.
+     * Trusts the libphonenumber offset when it points at the raw match;
+     * otherwise re-locates the match by value (multibyte safe), picking the
+     * occurrence closest to the reported offset.
+     */
+    private function resolveCharStart(string $text, string $rawString, int $start, int $charLength): ?int
+    {
+        if (mb_substr($text, $start, $charLength, 'UTF-8') === $rawString) {
+            return $start;
+        }
+
+        $best = null;
+        $offset = 0;
+        while (($pos = mb_strpos($text, $rawString, $offset, 'UTF-8')) !== false) {
+            if ($best === null || abs($pos - $start) < abs($best - $start)) {
+                $best = $pos;
+            }
+            $offset = $pos + 1;
+        }
+
+        return $best;
     }
 
     private function removeDuplicates(array $results): array
